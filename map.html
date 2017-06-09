@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+  </head>
+  <body>
+    <div class="container">
+      <div id="sidebar">
+        <h3>Places to go</h3>
+        <input id="resturants" type="button" value="Resturants">
+        <input id="close" type="button" value="Close Markers">
+        <br>
+        <input class="form-control" data-bind="value: Query, valueUpdate: 'keyup'" autocomplete="off">
+        <h3>Search results:</h3>
+        <ul id="test" data-bind="foreach: searchResults">
+          <li id="places" data-bind="text: title, click: showListings"></li>
+        </ul>
+
+      </div>
+      <div id="map"></div>
+    </div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPQi2ax3FXK6ri_TRb_3HPDILA-nm8bl4&callback=initMap"
+    async defer></script>
+  <script src="scripts/knockout.js"></script>
+  <script src="scripts/script.js"></script>
+
+  </body>
+</html>
