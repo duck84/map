@@ -13,17 +13,21 @@
         <input id="resturants" type="button" value="Resturants">
         <input id="close" type="button" value="Close Markers">
         <br>
-        <input class="form-control" data-bind="value: Query, valueUpdate: 'keyup'" autocomplete="off">
+        <input class="form-control" id="form-control" placeholder="Search..." data-bind="value: Query, valueUpdate: 'keyup'" autocomplete="off">
         <h3>Search results:</h3>
         <ul id="test" data-bind="foreach: searchResults">
-          <li id="places" data-bind="text: title"></li>
+          <li id="places" data-bind="text: title, click: viewModel.show"></li>
         </ul>
 
       </div>
       <div id="map"></div>
     </div>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPQi2ax3FXK6ri_TRb_3HPDILA-nm8bl4&callback=initMap"
-    async defer></script>
+    <script>
+    function googleError() {
+      alert("The Google map failed to load. Check internet connection.");
+    }
+    </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPQi2ax3FXK6ri_TRb_3HPDILA-nm8bl4&callback=initMap" onerror="googleError()"></script>
   <script src="scripts/knockout.js"></script>
   <script src="scripts/script.js"></script>
 
