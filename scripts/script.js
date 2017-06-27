@@ -32,7 +32,7 @@ viewModel.searchResults = ko.computed(function() {
 
 //code that links the filter to the markers
 viewModel.test = ko.computed(function() {
-  if (viewModel.Query() == false) {
+  if (viewModel.Query() === "") {
     showListings();
   } else {
   hideMarkers(markers);
@@ -61,26 +61,24 @@ function initMap() {
 var locations = viewModel.locations;
 
 var infowindow = new google.maps.InfoWindow();
-  
-for (var i = 0; i < locations.length; i++) {
 
-  (function(j) {
+    locations.forEach(function(element, index, array) {
+    var fsdata = viewModel.locations[index].data; //foursquare data that contains user and vist count for each location
+    var position = locations[index].location;
+    var title = locations[index].title;
 
-    var fsdata = viewModel.locations[j].data; //foursquare data that contains user and vist count for each location
-    var position = locations[j].location;
-    var title = locations[j].title;
     var marker = new google.maps.Marker({
       position: position,
       title: title,
       animation: google.maps.Animation.DROP,
-      id: j,
+      id: index,
       visible: true
     });
     markers.push(marker);
 
-    markers[i].setMap(map);
-    viewModel.locations[i].marker = marker;
-    viewModel.locations[i].infowindow = infowindow;
+    markers[index].setMap(map);
+    viewModel.locations[index].marker = marker;
+    viewModel.locations[index].infowindow = infowindow;
 
     marker.addListener('click', function() {
       infowindow.setContent(title + '<br><br>' +
@@ -96,9 +94,9 @@ for (var i = 0; i < locations.length; i++) {
 
     });
 
-  })(i);
+  });
 }
-}
+
 
 // This function will loop through the markers array and display them all.
 function showListings() {
@@ -137,9 +135,9 @@ function callFoursquare() {
     xhttp.open("GET", fsURL, false);
     xhttp.send(null);
     var jsonObject = JSON.parse(xhttp.responseText);
-    
-   
+
+
     viewModel.locations[i].data = jsonObject.response.venues[0].stats;
 }
 }
-callFoursquare()
+callFoursquare();
