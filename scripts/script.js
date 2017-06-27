@@ -19,6 +19,8 @@ var viewModel = {
 
 };
 
+callFoursquare()
+
 //code that runs the search filter
 viewModel.Query = ko.observable('');
 viewModel.searchResults = ko.computed(function() {
@@ -30,24 +32,25 @@ viewModel.searchResults = ko.computed(function() {
 
 //code that links the filter to the markers
 viewModel.test = ko.computed(function() {
-  if (viewModel.Query() == false) {
-    showListings()
+  if (viewModel.Query() === "") {
+    showListings();
   } else {
-  hideMarkers(markers)
+  hideMarkers(markers);
   //    var bounds = new google.maps.LatLngBounds();
   for (var i= 0; i < viewModel.searchResults().length; i++) {
-    viewModel.searchResults()[i].marker.setVisible(true)
+    viewModel.searchResults()[i].marker.setVisible(true);
   //  bounds.extend(viewModel.searchResults()[i].marker.position);
   }
   //    map.fitBounds(bounds);
 
 }
 
-})
+});
 
-var results = viewModel.searchResults()
+var results = viewModel.searchResults();
 
 ko.applyBindings(viewModel);
+
 
 //creates map with markers
 function initMap() {
@@ -56,46 +59,46 @@ function initMap() {
     zoom: 12
   });
 
-var locations = viewModel.locations
 
-var infowindow = new google.maps.InfoWindow()
 
-for (var i = 0; i < locations.length; i++) {
+var locations = viewModel.locations;
 
-  (function(j) {
+var infowindow = new google.maps.InfoWindow();
 
-    var fsdata = viewModel.locations[j].data //foursquare data that contains user and vist count for each location
-    var position = locations[j].location;
-    var title = locations[j].title;
+locations.forEach(function(element, index, array) {
+
+
+    var fsdata = viewModel.locations[index].data; //foursquare data that contains user and vist count for each location
+    var position = locations[index].location;
+    var title = locations[index].title;
     var marker = new google.maps.Marker({
       position: position,
       title: title,
       animation: google.maps.Animation.DROP,
-      id: j,
+      id: index,
       visible: true
     });
     markers.push(marker);
 
-    markers[i].setMap(map);
-    viewModel.locations[i].marker = marker;
-    viewModel.locations[i].infowindow = infowindow
+    markers[index].setMap(map);
+    viewModel.locations[index].marker = marker;
+    viewModel.locations[index].infowindow = infowindow;
 
     marker.addListener('click', function() {
       infowindow.setContent(title + '<br><br>' +
                 'FourSquare users: ' + fsdata.usersCount + '<br> ' +
-                'FourSquare visits: ' + fsdata.checkinsCount)
+                'FourSquare visits: ' + fsdata.checkinsCount);
       infowindow.open(map, this);
       map.setZoom(12);
       map.setCenter(marker.getPosition());
-      marker.setAnimation(google.maps.Animation.BOUNCE)
+      marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(function () {
         marker.setAnimation(null);
     }, 3000);
 
     });
 
-  })(i);
-};
+  });
 }
 
 // This function will loop through the markers array and display them all.
@@ -103,7 +106,7 @@ function showListings() {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setVisible(true);
   }
-};
+}
 
 
 // This function will loop through the listings and hide them all.
@@ -111,7 +114,7 @@ function hideMarkers(markers) {
   for (var i = 0; i < markers.length; i++) {
     markers[i].setVisible(false);
   }
-};
+}
 
 document.getElementById('resturants').addEventListener('click', showListings);
 
@@ -125,18 +128,18 @@ function callFoursquare() {
   var client_secret = "BBCJDCJTIKPJZURDRBPBVWR1ESGEBSU4O3OJEA5UK0LUF4LA";
   var client_id = "HSFBG34JW1X1KJEF4DIBLJDWSXRNWJ1I5VCFR4RKOALCJ1AS";
 
-  for (var i = 0; i < viewModel.locations.length; i++) {
-    var lat = viewModel.locations[i].location.lat
-    var lng = viewModel.locations[i].location.lng
-    var limit = 1
+  viewModel.locations.forEach(function(element, index, array) {
+    var lat = viewModel.locations[index].location.lat;
+    var lng = viewModel.locations[index].location.lng;
+    var limit = 1;
     var fsURL = "https://api.foursquare.com/v2/venues/search?v=" + version + "&ll=" + lat + "," + lng + "&client_id=" + client_id + "&client_secret=" + client_secret + "&limit=" + limit;
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", fsURL, false);
-    xhttp.send(null);
-    var jsonObject = JSON.parse(xhttp.responseText);
+    $.getJSON(fsURL, function (data) {
+      var jsonObject = data
+      viewModel.locations[index].data = jsonObject.response.venues[0].stats;
+    });
 
-    viewModel.locations[i].data = jsonObject.response.venues[0].stats
-}
-}
-callFoursquare()
+})
+};
+
+//TODO get the callFoursquare function to work. Alternative is to hard code foursquare IDs
