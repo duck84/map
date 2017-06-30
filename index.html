@@ -2,16 +2,16 @@
 <html>
   <head>
     <title>Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name=viewport content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
     <div class="container">
-      <div id="sidebar">
+      <aside>
         <h3>Places to go</h3>
-        <input id="resturants" type="button" value="Resturants">
-        <input id="close" type="button" value="Close Markers">
+        <input id="resturants" type="button" value="Resturants" data-bind="click: viewModel.showListings">
+        <input id="close" type="button" value="Close Markers" data-bind="click: viewModel.hideMarkers">
         <br>
         <input class="form-control" id="form-control" placeholder="Search..." data-bind="value: Query, valueUpdate: 'keyup'" autocomplete="off">
         <h3>Search results:</h3>
@@ -19,18 +19,16 @@
           <li id="places" data-bind="text: title, click: viewModel.show"></li>
         </ul>
 
-      </div>
-      <div id="map"></div>
+      </aside>
+      <main id="map">
+      </main>
     </div>
-    <script>
-    function googleError() {
-      alert("The Google map failed to load. Check internet connection.");
-    }
-    </script>
+
   <script  src="scripts/library/knockout-3.4.2.js"></script>
+  <script  src="scripts/library/jquery-3.2.1.min.js"></script>
   <script  src="scripts/script.js"></script>
   <script  async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPQi2ax3FXK6ri_TRb_3HPDILA-nm8bl4&callback=initMap" onerror="googleError()"></script>
-  
+
 
 
   </body>

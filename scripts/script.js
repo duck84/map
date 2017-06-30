@@ -1,6 +1,4 @@
 var map;
-function initMap(){
-}
 
 //create a variable for markers
 var markers = [];
@@ -8,7 +6,21 @@ var markers = [];
 var viewModel = {
 
   show: function(self) {
-        google.maps.event.trigger(self.marker, 'click');
+    google.maps.event.trigger(self.marker, 'click');
+  },
+
+    // This function will loop through the markers array and display them all.
+  showListings: function(self) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(true);
+      }
+    },
+
+    // This function will loop through the listings and hide them all.
+  hideMarkers: function(self) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setVisible(false);
+      }
     },
 
     locations: [
@@ -33,7 +45,7 @@ viewModel.searchResults = ko.computed(function() {
 //code that links the filter to the markers
 viewModel.test = ko.computed(function() {
   if (viewModel.Query() === "") {
-    showListings();
+    viewModel.showListings();
   } else {
   hideMarkers(markers);
   //    var bounds = new google.maps.LatLngBounds();
@@ -90,34 +102,12 @@ var infowindow = new google.maps.InfoWindow();
       marker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(function () {
         marker.setAnimation(null);
-    }, 3000);
+    }, 2100);
 
     });
 
   });
 }
-
-
-// This function will loop through the markers array and display them all.
-function showListings() {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setVisible(true);
-  }
-}
-
-
-// This function will loop through the listings and hide them all.
-function hideMarkers(markers) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setVisible(false);
-  }
-}
-
-document.getElementById('resturants').addEventListener('click', showListings);
-
-document.getElementById('close').addEventListener('click', function() {
-  hideMarkers(markers);
-});
 
 //funcation that requests data from FourSquare's API and saves it for later use.
 function callFoursquare() {
@@ -125,19 +115,38 @@ function callFoursquare() {
   var client_secret = "BBCJDCJTIKPJZURDRBPBVWR1ESGEBSU4O3OJEA5UK0LUF4LA";
   var client_id = "HSFBG34JW1X1KJEF4DIBLJDWSXRNWJ1I5VCFR4RKOALCJ1AS";
 
-  for (var i = 0; i < viewModel.locations.length; i++) {
-    var lat = viewModel.locations[i].location.lat;
-    var lng = viewModel.locations[i].location.lng;
+  viewModel.locations.forEach(function(element, index, array) {
+    var lat = viewModel.locations[index].location.lat;
+    var lng = viewModel.locations[index].location.lng;
     var limit = 1;
     var fsURL = "https://api.foursquare.com/v2/venues/search?v=" + version + "&ll=" + lat + "," + lng + "&client_id=" + client_id + "&client_secret=" + client_secret + "&limit=" + limit;
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", fsURL, false);
-    xhttp.send(null);
-    var jsonObject = JSON.parse(xhttp.responseText);
+fetch(fsURL)
+  .then(
+    function(response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+          response.status);
+        return;
+      }
 
+      // Examine the text in the response
+      response.json().then(function(data) {
+        viewModel.locations[index].data = data.response.venues[0].stats;
+        console.log(data);
+      });
+    }
+  )
+  .catch(function(err) {
+    console.log('Fetch Error :-S', err);
+  });
 
-    viewModel.locations[i].data = jsonObject.response.venues[0].stats;
+})
+};
+
+callFoursquare()
+//TODO get the callFoursquare function to work. Alternative is to hard code foursquare IDs
+
+function googleError() {
+  alert("The Google map failed to load. Check internet connection.");
 }
-}
-callFoursquare();
