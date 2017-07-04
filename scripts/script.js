@@ -69,6 +69,9 @@ function initMap() {
     center: {lat : 45.5231, lng: -122.6765},
     zoom: 12
   });
+}
+
+function initMarkers() {
 
 var locations = viewModel.locations;
 
@@ -142,6 +145,7 @@ fetch(fsURL)
   });
 
 })
+setTimeout(function() {initMarkers()}, 1000)
 };
 
 callFoursquare()
