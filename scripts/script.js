@@ -113,7 +113,7 @@ function createMarkers(data) {
 		}, 2100);
 	});
 	markerCount ++;
-	return markerCount
+	return markerCount;
 }
 
 //funcation that requests data from FourSquare's API and saves it for later use.
@@ -133,7 +133,7 @@ function callFoursquare() {
 			}
 			// Adds the FourSquare data to the createMarker function and creates makers
 			response.json().then(function(data) {
-        createMarkers(data.response.venues[0].stats)
+        createMarkers(data.response.venues[0].stats);
 			});
 		}).catch(function(err) {
       alert('Fetch Error :-S', err);
