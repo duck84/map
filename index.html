@@ -10,13 +10,13 @@
     <div class="container">
       <aside>
         <h3>Places to go</h3>
-        <input id="resturants" type="button" value="Resturants" data-bind="click: viewModel.showListings">
-        <input id="close" type="button" value="Close Markers" data-bind="click: viewModel.hideMarkers">
+        <input id="resturants" type="button" value="Resturants" data-bind="click: ViewModel.showListings">
+        <input id="close" type="button" value="Close Markers" data-bind="click: ViewModel.hideMarkers">
         <br>
         <input class="form-control" id="form-control" placeholder="Search..." data-bind="value: Query, valueUpdate: 'keyup'" autocomplete="off">
         <h3>Search results:</h3>
         <ul id="test" data-bind="foreach: searchResults">
-          <li id="places" data-bind="text: title, click: viewModel.show"></li>
+          <li id="places" data-bind="text: title, click: ViewModel.show"></li>
         </ul>
 
       </aside>
