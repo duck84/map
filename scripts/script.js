@@ -83,6 +83,7 @@ function initMap() {
 		zoom: 12
 	});
   infowindow = new google.maps.InfoWindow();
+	callFoursquare();
 }
 
 var markerCount = 0;
@@ -140,8 +141,7 @@ function callFoursquare() {
 		});
 	});
 }
-callFoursquare();
-	//TODO get the callFoursquare function to work. Alternative is to hard code foursquare IDs
+
 function googleError() {
 	alert("The Google map failed to load. Check internet connection.");
 }
